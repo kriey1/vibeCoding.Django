@@ -6,6 +6,21 @@
       <p class="card-text">{{ post.content }}</p>
       <hr>
       <p class="text-muted">작성자: {{ post.author.username }} | 작성일: {{ post.created_at|date:'Y-m-d H:i' }}</p>
+      
+      {% if post.files.all %}
+        <div class="mb-3">
+          <h5>첨부 파일</h5>
+          <ul class="list-group">
+            {% for file in post.files.all %}
+              <li class="list-group-item">
+                <a href="{{ file.file.url }}" target="_blank">{{ file.filename }}</a>
+                <small class="text-muted">({{ file.uploader.username }}, {{ file.created_at|date:'Y-m-d H:i' }})</small>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      
       <div class="d-flex gap-2">
         {% if user == post.author %}
           <a href="{% url 'post_update' post.pk %}" class="btn btn-warning">수정</a>
@@ -15,6 +30,61 @@
           </form>
         {% endif %}
         <a href="{% url 'post_list' %}" class="btn btn-secondary">목록으로</a>
+      </div>
+    </div>
+  </div>
+
+  {% if user.is_authenticated %}
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h5>파일 업로드</h5>
+        <form method="post" action="{% url 'file_upload' post.pk %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <input type="file" class="form-control" name="file" required>
+          </div>
+          <button type="submit" class="btn btn-primary">업로드</button>
+        </form>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h4>댓글 ({{ comments|length }})</h4>
+      <hr>
+      
+      {% if user.is_authenticated %}
+        <form method="post" action="{% url 'comment_create' post.pk %}" class="mb-4">
+          {% csrf_token %}
+          <div class="mb-3">
+            <textarea name="content" class="form-control" rows="3" placeholder="댓글을 입력하세요..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">댓글 작성</button>
+        </form>
+      {% else %}
+        <p class="text-muted">댓글을 작성하려면 <a href="{% url 'login' %}">로그인</a>해주세요.</p>
+      {% endif %}
+      
+      <div class="comments-list mt-4">
+        {% for comment in comments %}
+          <div class="card mb-3">
+            <div class="card-body">
+              <p class="mb-2">{{ comment.content }}</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">{{ comment.author.username }} | {{ comment.created_at|date:'Y-m-d H:i' }}</small>
+                {% if user == comment.author %}
+                  <form action="{% url 'comment_delete' comment.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger">삭제</button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <p class="text-muted">아직 댓글이 없습니다.</p>
+        {% endfor %}
       </div>
     </div>
   </div>
