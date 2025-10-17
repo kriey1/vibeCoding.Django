@@ -1,11 +1,21 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1>{% if post %}글 수정{% else %}글 작성{% endif %}</h1>
-  <form method="post">
-    {% csrf_token %}
-    <input type="text" name="title" placeholder="제목" value="{{ post.title|default:'' }}" required><br>
-    <textarea name="content" placeholder="내용" required>{{ post.content|default:'' }}</textarea><br>
-    <button type="submit">저장</button>
-  </form>
-  <a href="{% url 'post_list' %}">목록으로</a>
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="fw-bold">{% if post %}글 수정{% else %}글 작성{% endif %}</h2>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="title" class="form-label">제목</label>
+          <input type="text" id="title" name="title" class="form-control" placeholder="제목" value="{{ post.title|default:'' }}" required>
+        </div>
+        <div class="mb-3">
+          <label for="content" class="form-label">내용</label>
+          <textarea id="content" name="content" class="form-control" rows="5" placeholder="내용" required>{{ post.content|default:'' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">저장</button>
+        <a href="{% url 'post_list' %}" class="btn btn-secondary">목록으로</a>
+      </form>
+    </div>
+  </div>
 {% endblock %}
