@@ -21,4 +21,24 @@ class Post(models.Model):
 	def __str__(self):
 		return self.title
 
-# Create your models here.
+
+class Comment(models.Model):
+	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+	author = models.ForeignKey(User, on_delete=models.CASCADE)
+	content = models.TextField()
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return f'{self.author.username} - {self.post.title}'
+
+
+class FileUpload(models.Model):
+	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='files', null=True, blank=True)
+	uploader = models.ForeignKey(User, on_delete=models.CASCADE)
+	file = models.FileField(upload_to='uploads/')
+	filename = models.CharField(max_length=255)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return self.filename
