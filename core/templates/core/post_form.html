@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>{% if post %}글 수정{% else %}글 작성{% endif %}</h1>
+  <form method="post">
+    {% csrf_token %}
+    <input type="text" name="title" placeholder="제목" value="{{ post.title|default:'' }}" required><br>
+    <textarea name="content" placeholder="내용" required>{{ post.content|default:'' }}</textarea><br>
+    <button type="submit">저장</button>
+  </form>
+  <a href="{% url 'post_list' %}">목록으로</a>
+{% endblock %}

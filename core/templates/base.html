@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>vibeCoding Django</title>
+</head>
+<body>
+  {% if user.is_authenticated %}
+    <p>안녕하세요, {{ user.username }}! <a href="/admin/logout/">로그아웃</a></p>
+  {% else %}
+    <p><a href="/admin/login/">로그인</a></p>
+  {% endif %}
+  {% block content %}{% endblock %}
+</body>
+</html>

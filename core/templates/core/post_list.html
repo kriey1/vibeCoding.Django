@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>게시글 목록</h1>
+  <a href="{% url 'post_create' %}">새 글 작성</a>
+  <ul>
+    {% for post in posts %}
+      <li>
+        <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a> - {{ post.author.username }}
+      </li>
+    {% empty %}
+      <li>게시글이 없습니다.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
